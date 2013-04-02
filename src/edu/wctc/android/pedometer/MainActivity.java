@@ -11,18 +11,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.wctc.android.pedometer.GpsDistanceService.Unit;
 
 public class MainActivity extends Activity {
 
 	private LocationManager locationManager;
 	private LocationListener locationListener;
-	private double startLatitude = 0.0;
-	private double startLongitude = 0.0;
-	private double endLatitude = 0.0;
-	private double endLongitude = 0.0;
-	private double distance = 0.0;
-	private GpsDistanceService gpsService;
+	private Location startLocation;
+	private Location endLocation;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,45 +27,33 @@ public class MainActivity extends Activity {
 		locationListener = new SimpleLocationListener();
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				0, locationListener);
-		gpsService = new GpsDistanceService();
 
 		findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Location location = locationManager
+				startLocation = locationManager
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-				startLatitude = location.getLatitude();
-				startLongitude = location.getLongitude();
-
 				((TextView) findViewById(R.id.textView2)).setText(String
-						.valueOf(startLatitude)
+						.valueOf(startLocation.getLatitude())
 						+ ", "
-						+ String.valueOf(startLongitude));
+						+ String.valueOf(startLocation.getLongitude()));
 			}
 		});
 
 		findViewById(R.id.button2).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Location location = locationManager
+				endLocation = locationManager
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-				if (location != null) {
-					endLatitude = location.getLatitude();
-					endLongitude = location.getLongitude();
-				}
-
-				distance = gpsService.calculateDistance(startLatitude,
-						startLongitude, endLatitude, endLongitude, Unit.FEET);
-
 				((TextView) findViewById(R.id.textView3)).setText(String
-						.valueOf(endLatitude)
+						.valueOf(endLocation.getLatitude())
 						+ ", "
-						+ String.valueOf(endLongitude));
+						+ String.valueOf(endLocation.getLongitude()));
 
 				((TextView) findViewById(R.id.textView1)).setText(String
-						.valueOf(distance));
+						.valueOf(endLocation.distanceTo(startLocation)));
 			}
 		});
 	}
