@@ -53,7 +53,8 @@ public class MainActivity extends Activity {
 						+ String.valueOf(endLocation.getLongitude()));
 
 				((TextView) findViewById(R.id.textView1)).setText(String
-						.valueOf(endLocation.distanceTo(startLocation)));
+						.valueOf(endLocation.distanceTo(startLocation))
+						+ " meters away");
 			}
 		});
 	}
